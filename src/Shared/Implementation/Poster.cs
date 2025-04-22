@@ -1,13 +1,13 @@
 ﻿namespace Shared.Implementation;
 
-public class Poster<TPayload>(
+public class Poster(
      HttpClient httpClient, 
-     ILogger<Poster<TPayload>> logger) : IPoster<TPayload>
+     ILogger<Poster> logger) : IPoster
 {
-    public async Task<bool> PostAsync(
-        string url, TPayload 
-        payload, string 
-        bearerToken, 
+    public async Task<int> PostAsync(
+        string url, 
+        object payload, 
+        string bearerToken, 
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Posting payload to {Url}", url);
@@ -16,7 +16,7 @@ public class Poster<TPayload>(
         if (payload == null || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(bearerToken))
         {
             logger.LogWarning("Invalid parameters: url: {Url}, payload: {Payload}, bearerToken: {BearerToken}", url, payload, bearerToken);
-            return false;
+            return 500;
         }
 
         // Create the request message
@@ -35,12 +35,12 @@ public class Poster<TPayload>(
         if (!response.IsSuccessStatusCode)
         {
             logger.LogWarning("Failed to POST payload. Status: {StatusCode}", response.StatusCode);
-            return false;
+            return (int)response.StatusCode;
         }
 
         // Log the successful response
         logger.LogInformation("Payload successfully posted to {Endpoint}", url);
-        return true;
+        return (int)response.StatusCode;
 
     }
 }

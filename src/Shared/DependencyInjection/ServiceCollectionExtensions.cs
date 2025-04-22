@@ -7,9 +7,9 @@ public static class ServiceCollectionExtensions
     #region Services 
     public static IServiceCollection AddSharedServices(this IServiceCollection services)
     {
-        services.AddScoped(typeof(IFetcher<>), typeof(Fetcher<>));
-        services.AddScoped(typeof(IPoster<>), typeof(Poster<>));
+        services.AddScoped(typeof(IPoster), typeof(Poster));
         services.AddScoped(typeof(IWorkerConsumer<>), typeof(WorkerConsumer<>));
+        services.AddScoped(typeof(IGenerateTokenBasicAuth), typeof(GenerateTokenBasicAuth));
         return services;
     }
     #endregion
@@ -19,13 +19,13 @@ public static class ServiceCollectionExtensions
     {
         var currentDirectory = Directory.GetCurrentDirectory();
         var logFilePath = configuration["Logging:LogFilePath"];
-        var fullLogFilePath = Path.Combine(currentDirectory, logFilePath);
+        var fullLogFilePath = Path.Combine(currentDirectory, logFilePath!);
 
         // Ensure the directory exists
         var logDirectory = Path.GetDirectoryName(fullLogFilePath);
         if (!Directory.Exists(logDirectory))
         {
-            Directory.CreateDirectory(logDirectory);
+            Directory.CreateDirectory(logDirectory!);
         }
         var logger = new LoggerConfiguration()
           .WriteTo.Console()

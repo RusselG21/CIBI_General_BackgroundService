@@ -1,0 +1,9 @@
+﻿global using Serilog;
+global using Shared.DependencyInjection;
+global using Shared.ModelConfig;
+global using Shared.Abstraction;
+global using Shared.Implementation;
+global using System.Net.Http.Headers;
+global using Microsoft.AspNetCore.WebUtilities;
+global using Talkpush_BackgroundService.Implementation;
+global using Talkpush_BackgroundService.Models;

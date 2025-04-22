@@ -1,6 +1,6 @@
 ﻿namespace Shared.Abstraction;
 
-public interface IPoster<TPayload>
+public interface IPoster
 {
-    Task<bool> PostAsync(string url, TPayload payload, string bearerToken, CancellationToken cancellationToken);
+    Task<int> PostAsync(string url, object payload, string bearerToken, CancellationToken cancellationToken);
 }
