@@ -1,6 +1,4 @@
-﻿using Shared.ModelConfig;
-
-namespace Shared.Implementation;
+﻿namespace Shared.Implementation;
 
 /// <summary>
 /// Represents a worker that fetches data, processes it, and posts it to a specified URL.
@@ -9,9 +7,9 @@ namespace Shared.Implementation;
 public class WorkerConsumer<T>(
      IFetcher<T> fetcher,
      IPoster poster,
+     IGenerateTokenBasicAuth generateTokenBasicAuth,
      ILogger<WorkerConsumer<T>> logger,
-     WorkerConsumerOptions options,
-     string bearerToken="DSSADSAWE") : IWorkerConsumer<T>
+     WorkerConsumerOptions options) : IWorkerConsumer<T>
 {
     private static readonly AsyncRetryPolicy RetryPolicy = Policy
        .Handle<Exception>()
@@ -24,6 +22,15 @@ public class WorkerConsumer<T>(
     public async Task HandleAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("WorkerConsumer<{PayloadType}> started", typeof(T).Name);
+
+        // logger for consuming specific url
+        logger.LogInformation("WorkerConsumer<{PayloadType}>: Fetching from {Url} to get JWT Token", typeof(T).Name, options.FetchUrl);
+        var bearerToken = await generateTokenBasicAuth.jWTTokenResponse(
+            options.GenerateTokenUrl,
+            options.Username,
+            options.Password,
+            cancellationToken);
+
 
         var fetchedPayloads = await fetcher.FetchAsync(options.FetchUrl, options.QueryParams, cancellationToken);
 
@@ -43,18 +50,20 @@ public class WorkerConsumer<T>(
                     var result = await poster.PostAsync(
                         options.PostUrl,
                         payload!,
-                        bearerToken,
+                        bearerToken.Token,
                         cancellationToken);
-
+                    // Unauthorized access
                     if (result == 401)
                     {
                         logger.LogWarning("WorkerConsumer<{PayloadType}>: Unauthorized access", typeof(T).Name);
                     }
-                    else if (result == 500)
+                    // Server error
+                    if (result == 500)
                     {
                         logger.LogWarning("WorkerConsumer<{PayloadType}>: Failed to post payload", typeof(T).Name);
                     }
-                    else
+                    // Success
+                    if (result == 200)
                     {
                         logger.LogInformation("WorkerConsumer<{PayloadType}>: Successfully posted payload", typeof(T).Name);
                     }

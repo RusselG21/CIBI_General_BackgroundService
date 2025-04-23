@@ -17,7 +17,7 @@ namespace Shared.Implementation
         {
             _logger.LogInformation("BackgroundWorker<{PayloadType}> is starting.", typeof(T).Name);
 
-            _ = Task.Run(async () =>
+            while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
@@ -29,9 +29,9 @@ namespace Shared.Implementation
                 {
                     _logger.LogError(ex, "Error processing item in BackgroundWorker<{PayloadType}>", typeof(T).Name);
                 }
-            }, stoppingToken);
 
-            await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken); // wait before next trigger
+                await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken); // wait before next trigger
+            }
         }
     }
 }

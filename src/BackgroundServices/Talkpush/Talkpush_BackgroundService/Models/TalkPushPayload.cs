@@ -1,6 +1,13 @@
 ﻿namespace Talkpush_BackgroundService.Models;
 
 //Deserialize JSON payload from Talkpush API
+
+//Create candidate root
+public class CandidateRoot
+{
+    public IEnumerable<Candidate> Candidates { get; set; } = [];
+}
+
 public class Candidate
 {
     public string First_Name { get; set; } = string.Empty;

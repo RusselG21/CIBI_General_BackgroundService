@@ -12,4 +12,4 @@ global using Polly.Retry;
 global using Serilog;
 global using Shared.Models;
 global using System.Text;
-
+global using Shared.ModelConfig;

@@ -28,7 +28,9 @@ builder.Services.AddSingleton(new WorkerConsumerOptions(
     },
      urlTalkPushLeads,
      urlCreateTicket,
-     urlGenerateToken
+     urlGenerateToken,
+     username!,
+     password!
 ));
 
 var app = builder.Build();

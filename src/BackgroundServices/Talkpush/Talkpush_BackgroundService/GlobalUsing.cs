@@ -7,3 +7,5 @@ global using System.Net.Http.Headers;
 global using Microsoft.AspNetCore.WebUtilities;
 global using Talkpush_BackgroundService.Implementation;
 global using Talkpush_BackgroundService.Models;
+global using Polly;
+global using Polly.Retry;

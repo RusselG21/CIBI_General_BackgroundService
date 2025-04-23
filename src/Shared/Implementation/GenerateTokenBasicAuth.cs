@@ -33,7 +33,7 @@
             HttpResponseMessage response = null!;
             try
             {
-                response = await _httpClient.PostAsync(url, null, cancellationToken);
+                response = await _httpClient.GetAsync(url, cancellationToken);
             }
             catch (Exception ex)
             {
