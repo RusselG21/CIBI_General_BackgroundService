@@ -1,5 +1,3 @@
-using Talkpush_BackgroundService.Mapping;
-
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -23,6 +21,7 @@ builder.Services.ConfigureLogger(builder.Configuration);
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(Log.Logger);
 builder.Services.AddHostedService<BackgroundWorker<Candidate, CreateTicketCandidateRecord>>();
+builder.Services.AddSingleton<BranchDictionary>();
 builder.Services.AddScoped<ITransformer<Candidate, CreateTicketCandidateRecord>, CandidateTransformer>();
 
 // set up Worker Consumer Options

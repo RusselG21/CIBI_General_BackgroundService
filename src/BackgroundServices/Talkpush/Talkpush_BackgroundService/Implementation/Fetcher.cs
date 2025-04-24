@@ -4,8 +4,8 @@ namespace Talkpush_BackgroundService.Implementation;
 
 public class Fetcher(
     HttpClient httpClient, 
-    ILogger<IFetcher<Candidate>> logger) : 
-    IFetcher<Candidate>
+    ILogger<IFetcher<Candidate>> logger) 
+    : IFetcher<Candidate>
 {
     public async Task<IEnumerable<Candidate>> FetchAsync(
         string url, 

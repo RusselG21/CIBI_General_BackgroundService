@@ -20,7 +20,7 @@ public class WorkerConsumer<TIn,TOut>(
        .WaitAndRetryAsync(3, retryAttempt =>
            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-    private const int MaxConcurrency = 3;
+    private const int MaxConcurrency = 10;
     private readonly SemaphoreSlim _semaphore = new(MaxConcurrency);
 
     public async Task HandleAsync(CancellationToken cancellationToken)

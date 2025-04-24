@@ -15,10 +15,10 @@ public class MappingConfig
             .Map(dest => dest.TIN, src => src.Others.Tin_Number ?? "")
             .Map(dest => dest.Remarks, src => src.Others.Msa ?? "")
             .Map(dest => dest.ReferenceNumber, src => "")
-            .Map(dest => dest.RequestorFirstName, src => "Andrea Ross")
-            .Map(dest => dest.RequestorLastName, src => "Cueto")
+            .Map(dest => dest.RequestorFirstName, src => src.Others.Bi_Peme_Poc) //"Andrea Ross"
+            .Map(dest => dest.RequestorLastName, src => src.Others.Bi_Peme_Poc) //"Cueto"
             .Map(dest => dest.RequestorEmailAddress, src => "noemail@noemail.com")
-            .Map(dest => dest.Site, src => "CIBI_TEST") //src.Others.Job_Requisition_Primary_Location ?? ""
+            .Map(dest => dest.Site, src => src.Others.Job_Requisition_Primary_Location ?? "") //src.Others.Job_Requisition_Primary_Location ?? ""
             .Map(dest => dest.TurnAroundTimeID, src => 1)
             .Map(dest => dest.ReportTypeID, src => 424)
             .Map(dest => dest.CountryID, src => 0)
@@ -28,6 +28,10 @@ public class MappingConfig
             .Map(dest => dest.PostalCode, src => "")
             .AfterMapping((src, dest) =>
             {
+                // Name trimming
+                dest.RequestorFirstName = ToTrimName.ToFirstName(src.Others.Bi_Peme_Poc!);
+                dest.RequestorLastName = ToTrimName.ToLastName(src.Others.Bi_Peme_Poc!);
+
                 // Perform any additional transformations here
                 dest.EmailAddress = dest.EmailAddress!.ToLowerInvariant();
 
@@ -36,6 +40,9 @@ public class MappingConfig
 
                 // Convert the date of birth to the desired format
                 dest.DateOfBirth = DateTime.Parse(src.Others.Date_Of_Birth!).ToString("yyyy/MM/dd");
+
+                // Set the site name based on the branch dictionary
+                dest.Site = BranchDictionary.GetBranchName(dest.Site!);
             });
     }
 }

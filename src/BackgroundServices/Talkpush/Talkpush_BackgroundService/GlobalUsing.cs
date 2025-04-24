@@ -8,4 +8,6 @@ global using Microsoft.AspNetCore.WebUtilities;
 global using Talkpush_BackgroundService.Implementation;
 global using Talkpush_BackgroundService.Models;
 global using Mapster;
-global using Talkpush_BackgroundService.ModelSanitation;
+global using Talkpush_BackgroundService.Dictionary;
+global using Talkpush_BackgroundService.Mapping;
+global using Shared.Helper;
