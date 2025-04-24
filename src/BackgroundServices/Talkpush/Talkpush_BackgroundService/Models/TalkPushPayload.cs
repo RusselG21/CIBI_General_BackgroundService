@@ -21,7 +21,7 @@ public class Candidate
 public class Others
 {
     public string? Middle_Name { get; set; }
-    public DateTime Date_Of_Birth { get; set; }
+    public string? Date_Of_Birth { get; set; }
     public string? Sss_Number { get; set; }
     public string? Tin_Number { get; set; }
     public string? Msa { get; set; }
@@ -31,26 +31,27 @@ public class Others
 }
 
 
-public record CreateTicketCandidateRecord(
-    string FirstName,
-    string? MiddleName,
-    string LastName,
-    DateTime DateOfBirth,
-    string EmailAddress,
-    string PhoneNumber,
-    string SSSIDNumber,
-    string TIN,
-    string Remarks,
-    string ReferenceNumber,
-    string RequestorFirstName,
-    string RequestorLastName,
-    string RequestorEmailAddress,
-    string Site,
-    int TurnAroundTimeID,
-    int ReportTypeID,
-    int CountryID,
-    int ProvinceID,
-    int CityID,
-    string Address,
-    string PostalCode
-);
+public class CreateTicketCandidateRecord
+{
+    public string? FirstName { get; set; }
+    public string? MiddleName { get; set; }
+    public string? LastName { get; set; }
+    public string? DateOfBirth { get; set; }
+    public string? EmailAddress { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? SSSIDNumber { get; set; }
+    public string? TIN { get; set; }
+    public string? Remarks { get; set; }
+    public string? ReferenceNumber { get; set; }
+    public string? RequestorFirstName { get; set; }
+    public string? RequestorLastName { get; set; }
+    public string? RequestorEmailAddress { get; set; }
+    public string? Site { get; set; }
+    public int TurnAroundTimeID { get; set; }
+    public int ReportTypeID { get; set; }
+    public int CountryID { get; set; }
+    public int ProvinceID { get; set; }
+    public int CityID { get; set; }
+    public string? Address { get; set; }
+    public string? PostalCode { get; set; }
+}

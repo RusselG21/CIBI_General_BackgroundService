@@ -8,7 +8,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSharedServices(this IServiceCollection services)
     {
         services.AddScoped(typeof(IPoster), typeof(Poster));
-        services.AddScoped(typeof(IWorkerConsumer<>), typeof(WorkerConsumer<>));
+        services.AddScoped(typeof(IWorkerConsumer<,>), typeof(WorkerConsumer<,>));
         services.AddScoped(typeof(IGenerateTokenBasicAuth), typeof(GenerateTokenBasicAuth));
         return services;
     }
