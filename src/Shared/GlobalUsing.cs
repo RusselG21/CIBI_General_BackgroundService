@@ -13,3 +13,6 @@ global using Serilog;
 global using Shared.Models;
 global using System.Text;
 global using Shared.ModelConfig;
+global using FluentValidation;
+global using MediatR;
+global using System.Diagnostics;

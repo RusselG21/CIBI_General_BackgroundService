@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Talkpush_BackgroundService"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{22F72E50-B86A-48A6-4252-6FDC98C636E8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{2A5B5EFE-BEBB-4860-BE21-A65327EEFCAA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Talkpush", "Talkpush", "{9C6EC839-9ED2-4B9B-9E3B-72992A690100}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TalkPush.API", "API\TalkPush\TalkPush.API\TalkPush.API.csproj", "{A933C1DB-C225-41B2-8C98-F151185B3E0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +31,10 @@ Global
 		{22F72E50-B86A-48A6-4252-6FDC98C636E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22F72E50-B86A-48A6-4252-6FDC98C636E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22F72E50-B86A-48A6-4252-6FDC98C636E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A933C1DB-C225-41B2-8C98-F151185B3E0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A933C1DB-C225-41B2-8C98-F151185B3E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A933C1DB-C225-41B2-8C98-F151185B3E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A933C1DB-C225-41B2-8C98-F151185B3E0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +42,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{FEFD7FEA-2A9B-42A8-95BD-FC1EBD2768F8} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{D3A78634-E30E-FAC0-2AAD-8EA69EADC97A} = {FEFD7FEA-2A9B-42A8-95BD-FC1EBD2768F8}
+		{9C6EC839-9ED2-4B9B-9E3B-72992A690100} = {2A5B5EFE-BEBB-4860-BE21-A65327EEFCAA}
+		{A933C1DB-C225-41B2-8C98-F151185B3E0F} = {9C6EC839-9ED2-4B9B-9E3B-72992A690100}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE1B66CC-44BB-4E4A-A44C-4688F71B5083}
