@@ -1,4 +1,6 @@
-﻿namespace TalkPush.API.Operations;
+﻿using TalkPush.API.Exception;
+
+namespace TalkPush.API.Operations;
 
 public record UpdateReportRequest(int Id, IFormFile? file, string? document_tag_name, string? document_tag_id);
 
@@ -10,11 +12,15 @@ public class UpdateReportEndpoint : ICarterModule
     {
         app.MapPut("/api/v1/report", async (HttpRequest request, ISender sender) =>
         {
-            if (!request.HasFormContentType)
-                return Results.BadRequest("Expected multipart/form-data");
 
             // Manually read form data
             var form = await request.ReadFormAsync();
+
+
+            if (!form.ContainsKey("Id"))
+            {
+                throw new NullException("Id is required.", "Report");
+            }
 
             // Extract fields from form data
             var id = int.Parse(form["Id"]!);
