@@ -2,5 +2,5 @@
 
 public interface IPoster
 {
-    Task<int> PostAsync(string url, object payload, string bearerToken, CancellationToken cancellationToken);
+    Task<int> PostAsync(string url, object payload,object talkpushPayload, string bearerToken, CancellationToken cancellationToken);
 }

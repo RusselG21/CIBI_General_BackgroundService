@@ -9,6 +9,7 @@ public class Poster(
     public async Task<int> PostAsync(
         string url, 
         object payload, 
+        object talkPushPayload,
         string bearerToken, 
         CancellationToken cancellationToken)
     {

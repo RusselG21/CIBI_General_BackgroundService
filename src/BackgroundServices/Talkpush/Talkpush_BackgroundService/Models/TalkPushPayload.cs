@@ -10,10 +10,11 @@ public class CandidateRoot
 
 public class Candidate
 {
+    public int Id { get; set; }
+    public int Candidate_id { get; set; } 
     public string First_Name { get; set; } = string.Empty;
     public string Last_Name { get; set; } = string.Empty;
-    public long Candidate_Id { get; set; } 
-    public string Email { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;   
     public string User_Phone_Number { get; set; } = string.Empty;
     public Others Others { get; set; } = new();
 }

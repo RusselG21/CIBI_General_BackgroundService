@@ -17,7 +17,7 @@ public class WorkerConsumer<TIn,TOut>(
 {
     private static readonly AsyncRetryPolicy RetryPolicy = Policy
        .Handle<Exception>()
-       .WaitAndRetryAsync(3, retryAttempt =>
+       .WaitAndRetryAsync(10, retryAttempt =>
            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
     private const int MaxConcurrency = 10;
@@ -44,12 +44,12 @@ public class WorkerConsumer<TIn,TOut>(
             return;
         }
 
-        var tasks = fetchedPayloads.Select(async payload =>
+        var tasks = fetchedPayloads.Select(async talkPushPayload =>
         {
             await _semaphore.WaitAsync(cancellationToken);
             try
             {
-                var transformedPayload = transformer.Transform(payload);
+                var transformedPayload = transformer.Transform(talkPushPayload);
 
                 logger.LogInformation("WorkerConsumer<{PayloadType}>: Posting payload to {Url} , Transformed Payload is {TransformedPayload}", typeof(TIn).Name, options.PostUrl, JsonSerializer.Serialize(transformedPayload));
 
@@ -58,6 +58,7 @@ public class WorkerConsumer<TIn,TOut>(
                     var result = await poster.PostAsync(
                         options.PostUrl,
                         transformedPayload!,
+                        talkPushPayload!,
                         bearerToken.Token,
                         cancellationToken);
 

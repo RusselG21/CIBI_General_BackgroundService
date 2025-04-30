@@ -1,6 +1,4 @@
-﻿using Talkpush_BackgroundService.Models;
-
-namespace Talkpush_BackgroundService.Implementation;
+﻿namespace Talkpush_BackgroundService.Implementation;
 
 public class Fetcher(
     HttpClient httpClient, 

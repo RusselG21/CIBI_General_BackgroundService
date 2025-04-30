@@ -1,3 +1,6 @@
+using Talkpush_BackgroundService.Data.DataAbstraction;
+using Talkpush_BackgroundService.Data.DataImplementation;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -16,6 +19,9 @@ var includeAttachments = builder.Configuration["TalkpushRequest:IncludeAttachmen
 MappingConfig.RegisterMappings();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IFetcher<Candidate>, Fetcher>();
+builder.Services.AddScoped<IPoster, Talkpush_BackgroundService.Implementation.Poster>();
+builder.Services.AddScoped<ICreatedTicket_InsertData, CreatedTicket_InsertData>();
+builder.Services.AddScoped<ICheckedCandidateId, CheckedCandidateId>();
 builder.Services.AddSharedServices();
 builder.Services.ConfigureLogger(builder.Configuration);
 builder.Logging.ClearProviders();
@@ -23,6 +29,13 @@ builder.Logging.AddSerilog(Log.Logger);
 builder.Services.AddHostedService<BackgroundWorker<Candidate, CreateTicketCandidateRecord>>();
 builder.Services.AddSingleton<BranchDictionary>();
 builder.Services.AddScoped<ITransformer<Candidate, CreateTicketCandidateRecord>, CandidateTransformer>();
+
+// register DBCONTEXT
+builder.Services.AddDbContext<TalkpushDBContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("OMS"));
+});
+
 
 // set up Worker Consumer Options
 builder.Services.AddSingleton(new WorkerConsumerOptions(

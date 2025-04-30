@@ -16,3 +16,4 @@ global using Shared.ModelConfig;
 global using FluentValidation;
 global using MediatR;
 global using System.Diagnostics;
+global using System.Text.Json;

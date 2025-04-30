@@ -11,3 +11,7 @@ global using Mapster;
 global using Talkpush_BackgroundService.Dictionary;
 global using Talkpush_BackgroundService.Mapping;
 global using Shared.Helper;
+global using Microsoft.EntityFrameworkCore;
+global using Talkpush_BackgroundService.Data;
+global using System.Text.Json;
+
