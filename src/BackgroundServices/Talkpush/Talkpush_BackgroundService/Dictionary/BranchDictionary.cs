@@ -38,7 +38,7 @@ public class BranchDictionary
             { "PH-STA-YUSEC-Y0", "Concentrix San Lazaro" },
             { "PH-SAN-ESERV-Y0", "Concentrix Nuvali" },
             { "PH-CEB-CEBEX-01", "Concentrix Cebu Exchange" },
-            {"PH-BAC-LACS0","CIBI TEST"}
+            { "PH-BAC-LACS0", "Concentrix Alabang"}
         };
 
     public static string GetBranchName(string branchCode)

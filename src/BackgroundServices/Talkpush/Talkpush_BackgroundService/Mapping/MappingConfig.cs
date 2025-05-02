@@ -15,8 +15,8 @@ public class MappingConfig
             .Map(dest => dest.TIN, src => src.Others.Tin_Number ?? "")
             .Map(dest => dest.Remarks, src => src.Others.Msa ?? "")
             .Map(dest => dest.ReferenceNumber, src => "")
-            .Map(dest => dest.RequestorFirstName, src => "Andrea Ross") //"Andrea Ross"
-            .Map(dest => dest.RequestorLastName, src => "Cueto") //"Cueto"
+            .Map(dest => dest.RequestorFirstName, src => src.Others.Bi_Peme_Poc) //"Andrea Ross"
+            .Map(dest => dest.RequestorLastName, src => src.Others.Bi_Peme_Poc) //"Cueto"
             .Map(dest => dest.RequestorEmailAddress, src => "noemail@noemail.com")
             .Map(dest => dest.Site, src => src.Others.Job_Requisition_Primary_Location ?? "") //src.Others.Job_Requisition_Primary_Location ?? ""
             .Map(dest => dest.TurnAroundTimeID, src => 1)
@@ -29,8 +29,8 @@ public class MappingConfig
             .AfterMapping((src, dest) =>
             {
                 // Name trimming
-                //dest.RequestorFirstName = ToTrimName.ToFirstName(src.Others.Bi_Peme_Poc!);
-                //dest.RequestorLastName = ToTrimName.ToLastName(src.Others.Bi_Peme_Poc!);
+                dest.RequestorFirstName = ToTrimName.ToFirstName(src.Others.Bi_Peme_Poc!);
+                dest.RequestorLastName = ToTrimName.ToLastName(src.Others.Bi_Peme_Poc!);
 
                 // Perform any additional transformations hereaz
                 dest.EmailAddress = dest.EmailAddress!.ToLowerInvariant();

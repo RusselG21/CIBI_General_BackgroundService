@@ -14,4 +14,5 @@ global using Shared.Helper;
 global using Microsoft.EntityFrameworkCore;
 global using Talkpush_BackgroundService.Data;
 global using System.Text.Json;
+global using Talkpush_BackgroundService.Data.DataAbstraction;
 

@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
-using Talkpush_BackgroundService.Data.DataAbstraction;
-
-namespace Talkpush_BackgroundService.Implementation;
+﻿namespace Talkpush_BackgroundService.Implementation;
 
 public class Poster(
      HttpClient httpClient, 
@@ -71,6 +68,14 @@ public class Poster(
         // Log the successful response
         logger.LogInformation("Payload successfully posted to {Endpoint}", url);
 
+        // logger if ticket number in responseBody from Created ticket endpoint is null    
+        if (responseBody!.TicketNumber is null)
+        {
+            logger.LogInformation("Ticket Number is null issue, The issue is {message}", responseBody.ResultMessage);
+
+            return 200;
+        }
+
         // Log for inserting created ticket data
         logger.LogInformation("Inserting created ticket data to database OMS");
         var insertCreatedTicketData = new CreatedTicket
@@ -86,6 +91,9 @@ public class Poster(
 
         // log Successfully inserted 
         logger.LogInformation("Successfully inserted created ticket data to database OMS");
+
+        // log for ticket number is not null
+        logger.LogWarning("Ticket number is {TicketNumber}", responseBody.TicketNumber);
 
         return 200;
 
