@@ -30,7 +30,7 @@ namespace Shared.Implementation
                     _logger.LogError(ex, "Error processing item in BackgroundWorker<{PayloadType}>", typeof(TIn).Name);
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken); // wait before next trigger
+                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken); // wait before next trigger
             }
         }
     }

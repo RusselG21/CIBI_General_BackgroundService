@@ -2,7 +2,7 @@
 
 public class MappingConfig
 {
-    public static void RegisterMappings()
+    public static void RegisterMappings(IConfiguration configuration)
     {
         TypeAdapterConfig<Candidate, CreateTicketCandidateRecord>.NewConfig()
             .Map(dest => dest.FirstName, src => src.First_Name)
@@ -20,7 +20,7 @@ public class MappingConfig
             .Map(dest => dest.RequestorEmailAddress, src => "noemail@noemail.com")
             .Map(dest => dest.Site, src => src.Others.Job_Requisition_Primary_Location ?? "") //src.Others.Job_Requisition_Primary_Location ?? ""
             .Map(dest => dest.TurnAroundTimeID, src => 1)
-            .Map(dest => dest.ReportTypeID, src => 424)
+            .Map(dest => dest.ReportTypeID, src =>  configuration["TalkPushReportType:Id"])
             .Map(dest => dest.CountryID, src => 0)
             .Map(dest => dest.ProvinceID, src => 0)
             .Map(dest => dest.CityID, src => 0)
