@@ -1,11 +1,15 @@
 
+using Serilog;
+using Shared.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 var assembly = typeof(Program).Assembly;
 
 // Register services
-
+builder.Services.ConfigureLogger(builder.Configuration);
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(Log.Logger);
 builder.Services.AddHttpClient();
-
 // Add services to the container. // Add the carter service
 builder.Services.AddCarter(configurator: c =>
 {

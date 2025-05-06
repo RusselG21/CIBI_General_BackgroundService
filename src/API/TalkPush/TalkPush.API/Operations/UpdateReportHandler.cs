@@ -18,12 +18,16 @@ public class UpdateReportDCommandValidator : AbstractValidator<UpdateReportDComm
 
 public class UpdateReportHandler(
     IConfiguration configuration,
-    HttpClient httpClient) : IRequestHandler<UpdateReportDCommand, UpdateReportResult>
+    HttpClient httpClient,
+    ILogger<UpdateReportHandler> logger ) : IRequestHandler<UpdateReportDCommand, UpdateReportResult>
 {
     public async Task<UpdateReportResult> Handle(UpdateReportDCommand request, CancellationToken cancellationToken)
     {
         var baseUrl = configuration["TalkpushSettings:BaseUrl"];
         var apiKey = configuration["TalkpushSettings:APIKey"];
+
+        // logger for setting up form data
+        logger.LogInformation("Setting up form data for file upload.");
 
         // Set up form-data content type    
         using var formData = new MultipartFormDataContent();
@@ -45,12 +49,21 @@ public class UpdateReportHandler(
         // Make the PUT request
         var response = await httpClient.PutAsync(finalUrl, formData, cancellationToken);
 
+        // logger for response message 
+        var responseContent = await response.Content.ReadAsStringAsync();
+        logger.LogDebug($"Response Content: {responseContent}");
+
+
         // Check the response status
         if (!response.IsSuccessStatusCode)
         {
+            // Log the error message
+            logger.LogError("Failed to update report. Status Code: {StatusCode}, Response: {Response}", response.StatusCode, responseContent);
             return new UpdateReportResult(false);
         }
 
+        // Log the success message
+        logger.LogInformation("Report updated successfully. Status Code: {StatusCode}", response.StatusCode);
         return new UpdateReportResult(true);
     }
 }

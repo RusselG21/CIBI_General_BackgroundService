@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace Shared.DependencyInjection;
+﻿namespace Shared.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
@@ -30,8 +28,7 @@ public static class ServiceCollectionExtensions
         var logger = new LoggerConfiguration()
           .WriteTo.Console()
           .WriteTo.File(fullLogFilePath, rollingInterval: RollingInterval.Day)
-          .MinimumLevel
-          .Information()
+          .MinimumLevel.Debug()
           .CreateLogger();
         Log.Logger = logger;
         services.AddSingleton<Serilog.ILogger>(logger);

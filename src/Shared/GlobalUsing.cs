@@ -17,3 +17,5 @@ global using FluentValidation;
 global using MediatR;
 global using System.Diagnostics;
 global using System.Text.Json;
+global using Microsoft.Extensions.Configuration;
+

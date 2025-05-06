@@ -1,6 +1,3 @@
-using Talkpush_BackgroundService.Data.DataAbstraction;
-using Talkpush_BackgroundService.Data.DataImplementation;
-
 var builder = WebApplication.CreateBuilder(args);
 
 
