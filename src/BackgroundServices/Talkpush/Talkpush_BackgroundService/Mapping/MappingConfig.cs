@@ -36,10 +36,10 @@ public class MappingConfig
                 dest.EmailAddress = dest.EmailAddress!.ToLowerInvariant();
 
                 //contact Number adding 0
-                dest.PhoneNumber = dest.PhoneNumber!.StartsWith("0") ? dest.PhoneNumber : "0" + dest.PhoneNumber;
+                //dest.PhoneNumber = dest.PhoneNumber!.StartsWith("0") ? string.Empty : "0" + dest.PhoneNumber;
 
                 // Convert the date of birth to the desired format
-                dest.DateOfBirth = DateTime.Parse(src.Others.Date_Of_Birth!).ToString("yyyy/MM/dd");
+                dest.DateOfBirth = dest.DateOfBirth is not null ? DateTime.Parse(src.Others.Date_Of_Birth!).ToString("yyyy/MM/dd") : null;
 
                 // Set the site name based on the branch dictionary
                 dest.Site = BranchDictionary.GetBranchName(dest.Site!);

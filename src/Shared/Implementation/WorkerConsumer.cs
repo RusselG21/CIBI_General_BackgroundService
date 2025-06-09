@@ -8,11 +8,8 @@ namespace Shared.Implementation;
 /// </summary>
 /// <typeparam name="T">The type of the payload being processed.</typeparam>
 public class WorkerConsumer<TIn,TOut>(
-     IFetcher<TIn> fetcher,
-     IPoster poster,
-     IGenerateTokenBasicAuth generateTokenBasicAuth,
+     IServiceProvider serviceProvider,
      ILogger<WorkerConsumer<TIn, TOut>> logger,
-     ITransformer<TIn, TOut> transformer,
      WorkerConsumerOptions options) : IWorkerConsumer<TIn, TOut>
 {
     private static readonly AsyncRetryPolicy RetryPolicy = Policy
@@ -25,6 +22,11 @@ public class WorkerConsumer<TIn,TOut>(
 
     public async Task HandleAsync(CancellationToken cancellationToken)
     {
+        using var scope = serviceProvider.CreateScope();
+
+        var fetcher = scope.ServiceProvider.GetRequiredService<IFetcher<TIn>>();
+        var generateTokenBasicAuth = scope.ServiceProvider.GetRequiredService<IGenerateTokenBasicAuth>();
+
         logger.LogInformation("WorkerConsumer<{PayloadType}> started", typeof(TIn).Name);
 
         // logger for consuming specific url
@@ -49,13 +51,17 @@ public class WorkerConsumer<TIn,TOut>(
             await _semaphore.WaitAsync(cancellationToken);
             try
             {
-                var transformedPayload = transformer.Transform(talkPushPayload);
+                // Setting up scope service
+                using var scope = serviceProvider.CreateScope();
+                var scopedPoster = scope.ServiceProvider.GetRequiredService<IPoster>();
+                var scopedTransformer = scope.ServiceProvider.GetRequiredService<ITransformer<TIn, TOut>>();
+                var transformedPayload = scopedTransformer.Transform(talkPushPayload);
 
                 logger.LogInformation("WorkerConsumer<{PayloadType}>: Posting payload to {Url} , Transformed Payload is {TransformedPayload}", typeof(TIn).Name, options.PostUrl, JsonSerializer.Serialize(transformedPayload));
 
                 await RetryPolicy.ExecuteAsync(async () =>
                 {
-                    var result = await poster.PostAsync(
+                    var result = await scopedPoster.PostAsync(
                         options.PostUrl,
                         transformedPayload!,
                         talkPushPayload!,

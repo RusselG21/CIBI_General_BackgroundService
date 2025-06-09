@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -21,12 +19,13 @@ Host.CreateDefaultBuilder(args)
         services.AddScoped<ITransformer<Candidate, CreateTicketCandidateRecord>, CandidateTransformer>();
 
         services.AddDbContext<TalkpushDBContext>(options =>
-            options.UseSqlServer(config.GetConnectionString("OMS")));
+            options.UseSqlServer(config.GetConnectionString("OMS")),
+            ServiceLifetime.Scoped);
 
         services.AddSingleton(new WorkerConsumerOptions(
             new Dictionary<string, string> {
                 { "api_key", config["TalkpushRequest:ApiKey"]! },
-                { "filter[query]", config["TalkpushRequest:FilterQuery"]! },
+                { "ffilter[others][bi_check]", config["TalkpushRequest:FilterQuery"]! },
                 { "include_documents", config["TalkpushRequest:IncludeDocuments"]! },
                 { "include_attachments", config["TalkpushRequest:IncludeAttachments"]! }
             },
