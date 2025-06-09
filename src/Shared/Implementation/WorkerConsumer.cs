@@ -87,7 +87,7 @@ public class WorkerConsumer<TIn,TOut>(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "WorkerConsumer<{PayloadType}>: Exception while posting payload", typeof(TIn).Name);
+                logger.LogError(ex, "WorkerConsumer<{PayloadType}>: Exception while posting payload for {user}", typeof(TIn).Name, JsonSerializer.Serialize(talkPushPayload));
             }
             finally
             {

@@ -10,21 +10,22 @@ public class Fetcher(
         Dictionary<string,string> queryParams, 
         CancellationToken cancellationToken)
     {
-        var enpoint = "";
-
+        var endpoint = "";
+        queryParams.Remove("filter[others][bi_check]");
         if (queryParams != null && queryParams.Count > 0)
         {
-            enpoint = QueryHelpers.AddQueryString(url, queryParams!);    
+            endpoint = QueryHelpers.AddQueryString(url, queryParams!);
+            endpoint += "&filter[others][bi_check]=CIBI";
         }
 
-        logger.LogInformation("Fetching data from {Url}", enpoint);
+        logger.LogInformation("Fetching data from {Url}", endpoint);
         // Set default Accept header to application/json
         if (!httpClient.DefaultRequestHeaders.Accept.Any(h => h.MediaType == "application/json"))
         {
             httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
-        var httpResponse = await httpClient.GetAsync(enpoint);
+        var httpResponse = await httpClient.GetAsync(endpoint);
         var contentType = httpResponse.Content.Headers.ContentType?.MediaType;
 
         if (contentType != "application/json")

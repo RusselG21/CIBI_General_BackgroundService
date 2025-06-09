@@ -25,7 +25,7 @@ Host.CreateDefaultBuilder(args)
         services.AddSingleton(new WorkerConsumerOptions(
             new Dictionary<string, string> {
                 { "api_key", config["TalkpushRequest:ApiKey"]! },
-                { "ffilter[others][bi_check]", config["TalkpushRequest:FilterQuery"]! },
+                { "filter[others][bi_check]", config["TalkpushRequest:FilterQuery"]! },
                 { "include_documents", config["TalkpushRequest:IncludeDocuments"]! },
                 { "include_attachments", config["TalkpushRequest:IncludeAttachments"]! }
             },

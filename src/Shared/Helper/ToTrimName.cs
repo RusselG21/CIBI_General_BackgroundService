@@ -8,17 +8,10 @@ public static class ToTrimName
         {
             return string.Empty;
         }
-        var nameParts = name.Split(' ');
-        if (nameParts.Length == 3)
-        {
-            return nameParts[1].Trim();
-        }
 
-        if (nameParts.Length == 2)
-        {
-            return nameParts[0].Trim();
-        }
-        return string.Empty;
+        var nameParts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        return string.Join(" ", nameParts.Take(nameParts.Length - 1)); ;
     }
 
     public static string ToLastName(string name)
@@ -27,17 +20,9 @@ public static class ToTrimName
         {
             return string.Empty;
         }
-        var nameParts = name.Split(' ');
 
-        if (nameParts.Length == 2)
-        {
-            return nameParts[1].Trim();
-        }
+        var nameParts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-        if (nameParts.Length == 3)
-        {
-            return nameParts[2].Trim();
-        }
-        return string.Empty;
+        return nameParts[^1];
     }
 }
