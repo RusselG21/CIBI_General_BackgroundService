@@ -2,5 +2,5 @@
 
 public interface IWorkerConsumer<TIn, TOut>
 {
-    Task HandleAsync(CancellationToken cancellationToken);
+    Task<int> HandleAsync(int page,CancellationToken cancellationToken);
 }

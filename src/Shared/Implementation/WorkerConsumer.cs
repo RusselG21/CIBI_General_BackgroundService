@@ -1,26 +1,16 @@
-﻿using System.Text.Json;
-using Shared.Abstraction;
-
-namespace Shared.Implementation;
+﻿namespace Shared.Implementation;
 
 /// <summary>
 /// Represents a worker that fetches data, processes it, and posts it to a specified URL.
 /// </summary>
-/// <typeparam name="T">The type of the payload being processed.</typeparam>
-public class WorkerConsumer<TIn,TOut>(
-     IServiceProvider serviceProvider,
-     ILogger<WorkerConsumer<TIn, TOut>> logger,
-     WorkerConsumerOptions options) : IWorkerConsumer<TIn, TOut>
+/// <typeparam name="TIn">The type of the incoming payload.</typeparam>
+/// <typeparam name="TOut">The type of the transformed payload.</typeparam>
+public class WorkerConsumer<TIn, TOut>(
+    IServiceProvider serviceProvider,
+    ILogger<WorkerConsumer<TIn, TOut>> logger,
+    WorkerConsumerOptions options) : IWorkerConsumer<TIn, TOut>
 {
-    private static readonly AsyncRetryPolicy RetryPolicy = Policy
-       .Handle<Exception>()
-       .WaitAndRetryAsync(10, retryAttempt =>
-           TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-
-    private const int MaxConcurrency = 10;
-    private readonly SemaphoreSlim _semaphore = new(MaxConcurrency);
-
-    public async Task HandleAsync(CancellationToken cancellationToken)
+    public async Task<int> HandleAsync(int page, CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
 
@@ -29,7 +19,6 @@ public class WorkerConsumer<TIn,TOut>(
 
         logger.LogInformation("WorkerConsumer<{PayloadType}> started", typeof(TIn).Name);
 
-        // logger for consuming specific url
         logger.LogInformation("WorkerConsumer<{PayloadType}>: Fetching from {Url} to get JWT Token", typeof(TIn).Name, options.FetchUrl);
         var bearerToken = await generateTokenBasicAuth.jWTTokenResponse(
             options.GenerateTokenUrl,
@@ -37,64 +26,66 @@ public class WorkerConsumer<TIn,TOut>(
             options.Password,
             cancellationToken);
 
+        options.QueryParams["page"] = page.ToString();
+        logger.LogInformation("WorkerConsumer<{PayloadType}>: Query Params are {QueryParams}", typeof(TIn).Name, JsonSerializer.Serialize(options.QueryParams));
 
         var fetchedPayloads = await fetcher.FetchAsync(options.FetchUrl, options.QueryParams, cancellationToken);
 
-        if (fetchedPayloads is null)
+        if (fetchedPayloads is null || !fetchedPayloads.Any())
         {
-            logger.LogWarning("WorkerConsumer<{PayloadType}>: No payloads found", typeof(TIn).Name);
-            return;
+            logger.LogWarning("WorkerConsumer<{PayloadType}>: No payloads to process", typeof(TIn).Name);
+            return 1;
         }
 
-        var tasks = fetchedPayloads.Select(async talkPushPayload =>
+        foreach (var talkPushPayload in fetchedPayloads)
         {
-            await _semaphore.WaitAsync(cancellationToken);
             try
             {
-                // Setting up scope service
-                using var scope = serviceProvider.CreateScope();
-                var scopedPoster = scope.ServiceProvider.GetRequiredService<IPoster>();
-                var scopedTransformer = scope.ServiceProvider.GetRequiredService<ITransformer<TIn, TOut>>();
+                using var scopedScope = serviceProvider.CreateScope();
+                var scopedPoster = scopedScope.ServiceProvider.GetRequiredService<IPoster>();
+                var scopedTransformer = scopedScope.ServiceProvider.GetRequiredService<ITransformer<TIn, TOut>>();
+
                 var transformedPayload = scopedTransformer.Transform(talkPushPayload);
 
-                logger.LogInformation("WorkerConsumer<{PayloadType}>: Posting payload to {Url} , Transformed Payload is {TransformedPayload}", typeof(TIn).Name, options.PostUrl, JsonSerializer.Serialize(transformedPayload));
+                logger.LogInformation(
+                    "WorkerConsumer<{PayloadType}>: Posting payload to {Url}, Transformed Payload: {TransformedPayload}",
+                    typeof(TIn).Name,
+                    options.PostUrl,
+                    JsonSerializer.Serialize(transformedPayload));
 
-                await RetryPolicy.ExecuteAsync(async () =>
+                var result = await scopedPoster.PostAsync(
+                    options.PostUrl,
+                    transformedPayload!,
+                    talkPushPayload!,
+                    bearerToken.Token,
+                    cancellationToken);
+
+                if (result == 200)
                 {
-                    var result = await scopedPoster.PostAsync(
-                        options.PostUrl,
-                        transformedPayload!,
-                        talkPushPayload!,
-                        bearerToken.Token,
-                        cancellationToken);
+                    logger.LogInformation("WorkerConsumer<{PayloadType}>: Successfully posted payload", typeof(TIn).Name);
+                }
+                else if (result == 401)
+                {
+                    logger.LogWarning("WorkerConsumer<{PayloadType}>: Unauthorized access", typeof(TIn).Name);
+                }
+                else if (result == 500)
+                {
+                    logger.LogWarning("WorkerConsumer<{PayloadType}>: Server error while posting payload", typeof(TIn).Name);
+                }
+                else
+                {
+                    logger.LogWarning("WorkerConsumer<{PayloadType}>: Unexpected response code {StatusCode}", typeof(TIn).Name, result);
+                }
 
-                    // Unauthorized access
-                    if (result == 401)
-                    {
-                        logger.LogWarning("WorkerConsumer<{PayloadType}>: Unauthorized access", typeof(TIn).Name);
-                    }
-                    // Server error
-                    if (result == 500)
-                    {
-                        logger.LogWarning("WorkerConsumer<{PayloadType}>: Failed to post payload", typeof(TIn).Name);
-                    }
-                    // Success
-                    if (result == 200)
-                    {
-                        logger.LogInformation("WorkerConsumer<{PayloadType}>: Successfully posted payload", typeof(TIn).Name);
-                    }
-                });
+                // Optional cooldown between posts (tweak this based on testing)
+                await Task.Delay(300, cancellationToken);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "WorkerConsumer<{PayloadType}>: Exception while posting payload for {user}", typeof(TIn).Name, JsonSerializer.Serialize(talkPushPayload));
+                logger.LogError(ex, "WorkerConsumer<{PayloadType}>: Exception while posting payload for {User}", typeof(TIn).Name, JsonSerializer.Serialize(talkPushPayload));
             }
-            finally
-            {
-                _semaphore.Release();
-            }
-        });
+        }
 
-        await Task.WhenAll(tasks);
+        return page + 1;
     }
 }

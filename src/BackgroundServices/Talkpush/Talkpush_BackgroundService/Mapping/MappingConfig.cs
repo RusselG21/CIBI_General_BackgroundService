@@ -16,11 +16,11 @@ public class MappingConfig
             .Map(dest => dest.SSSIDNumber, src => src.Others.Sss_Number ?? "")
             .Map(dest => dest.TIN, src => src.Others.Tin_Number ?? "")
             .Map(dest => dest.Remarks, src => src.Others.Msa ?? "")
-            .Map(dest => dest.ReferenceNumber, src => "")
-            .Map(dest => dest.RequestorFirstName, src => "Andrea Ross") //"Andrea Ross" src.Others.Bi_Peme_Poc
-            .Map(dest => dest.RequestorLastName, src => "Cueto") //"Cueto" src.Others.Bi_Peme_Poc
+            .Map(dest => dest.ReferenceNumber, src => src.Id)
+            .Map(dest => dest.RequestorFirstName, src => "Shy") // 'Bulan', 'Rubyros'"Andrea Ross" src.Others.Bi_Peme_Poc
+            .Map(dest => dest.RequestorLastName, src => "Alfaro") //"Cueto" src.Others.Bi_Peme_Poc
             .Map(dest => dest.RequestorEmailAddress, src => "noemail@noemail.com")
-            .Map(dest => dest.Site, src => "CIBI TEST") //src.Others.Job_Requisition_Primary_Location ?? ""
+            .Map(dest => dest.Site, src => "Concentrix Alabang") //src.Others.Job_Requisition_Primary_Location ?? "" 664 for balanace ID
             .Map(dest => dest.TurnAroundTimeID, src => 1)
             .Map(dest => dest.ReportTypeID, src =>  configuration["TalkPushReportType:Id"])
             .Map(dest => dest.CountryID, src => 0)
